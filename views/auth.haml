@@ -1,0 +1,86 @@
+!!!
+%html
+  %head
+    %title Authentication
+    %script{ :src => "//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" }
+    %meta{:charset => "UTF-8"}/
+  %body
+    %p
+      &nbsp;
+    %center
+      Code:
+      %span#code
+    %p
+      &nbsp;
+
+    %center
+      %form#form{ :method => :post, :action => "/auth" }
+        %input#inputval{ :type => :hidden, :name => :code, :value => "" }
+        - [1,2,3].each do |num|
+          %svg.code-button{ :data => { :val => num } }
+            %use{"xlink:href" => "#button-car-counter-#{num}"}
+        %br
+        - [4,5,6].each do |num|
+          %svg.code-button{ :data => { :val => num } }
+            %use{"xlink:href" => "#button-car-counter-#{num}"}
+        %br
+        - [7,8,9].each do |num|
+          %svg.code-button{ :data => { :val => num } }
+            %use{"xlink:href" => "#button-car-counter-#{num}"}
+        %br
+        - ["x",0,'✓'].each do |num|
+          %svg.code-button{ :data => { :val => num } }
+            %use{"xlink:href" => "#button-car-counter-#{num}"}
+
+    :javascript
+      $(document).ready(function(){
+        $('.code-button').click(function(event){
+          if ( $(this).data('val') == '✓' ) {
+            $('#form').submit();
+          } else {
+            if ($(this).data('val') == 'x') {
+              $('#inputval').prop( 'value', "" );
+              $('#code').html("");
+              $('.code-button').removeClass('on');
+            } else {
+              $('.code-button').removeClass('on');
+              $(this).addClass('on');
+
+              $('#inputval').prop( 'value', $('#inputval').prop('value') +
+                                                       $(this).data('val') );
+              $('#code').html($('#code').html()+"*");
+            }
+          }
+
+        });
+      });
+
+    :css
+      .code-button {
+        fill: #000;
+        stroke: #000;
+        width: 50px;
+        height: 50px;
+        margin-left: 10px;
+      }
+
+      .on {
+        stroke: #31a64a;
+        fill: #e30d21;
+      }
+
+      #button-car-counter-✓ {
+        stroke: #31a64a;
+        fill: #000;
+      }
+      #button-car-counter-x {
+        stroke: #e30d21;
+        fill: #000;
+      }
+
+    %svg{:style => "display: none;", :version => "1.1", "xml:space" => "preserve", :xmlns => "http://www.w3.org/2000/svg", "xmlns:xlink" => "http://www.w3.org/1999/xlink"}
+      - [0,1,2,3,4,5,6,7,8,9,"✓","x"].each do |cnt|
+        %symbol{ :id => "button-car-counter-#{cnt}", :viewbox => "0 0 30 30" }
+          %g
+            %circle{:cx => "15", :cy => "15", "fill-opacity" => "0", :r => "14", "stroke-width" => "2"}
+            %text{"font-family" => "Sans-serif", "font-size" => "24", "font-weight" => "bold",  "stroke-dasharray" => "null", "stroke-linecap" => "null", "stroke-linejoin" => "null", "stroke-width" => "0", "text-anchor" => "middle", :transform => "matrix(1, 0, 0, 0.823391, 0, -5.85879)", :x => "14.6", "xml:space" => "preserve", :y => "33.56422"}= cnt

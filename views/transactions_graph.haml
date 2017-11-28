@@ -1,0 +1,24 @@
+= haml :"_js_graph"
+
+= haml :"_account_panel"
+
+= haml :"_graph_panel", :locals => {:title => "Outgoing, Ingoing and Totals", :id => "chart1" }
+= haml :"_graph_panel", :locals => {:title => "ATMs", :id => "chart2" }
+= haml :"_graph_panel", :locals => {:title => "Rent", :id => "chart3" }
+= haml :"_graph_panel", :locals => {:title => "Electric", :id => "chart4" }
+= haml :"_graph_panel", :locals => {:title => "Salary", :id => "chart5" }
+= haml :"_graph_panel", :locals => {:title => "Car Sharing", :id => "chart6" }
+= haml :"_graph_panel", :locals => {:title => "Telephone", :id => "chart7" }
+= haml :"_graph_panel", :locals => {:title => "Internet", :id => "chart8" }
+
+:javascript
+  $(document).ready(function(){
+    graphit('#chart1', "/api/account/none/#{@account.id}.json");
+    graphit('#chart2', "/api/account/atm/#{@account.id}.json");
+    graphit('#chart3', "/api/account/rent/#{@account.id}.json");
+    graphit('#chart4', "/api/account/electric/#{@account.id}.json");
+    graphit('#chart5', "/api/account/salary/#{@account.id}.json");
+    graphit('#chart6', "/api/account/carsharing/#{@account.id}.json");
+    graphit('#chart7', "/api/account/telephone/#{@account.id}.json");
+    graphit('#chart8', "/api/account/internet/#{@account.id}.json");
+  });

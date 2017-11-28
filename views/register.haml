@@ -1,0 +1,48 @@
+= haml :"_js_encrypt"
+
+:javascript
+  function encrypt() {
+    var data = JSON.stringify({email: $('#email').val(), name: $('#name').val(), type: 'register', password1: $('#pword').val(), password2: $('#pword2').val()});
+    encrypt_data(data, "#{ENV['RSA_PUBLIC_KEY']}", function(result){
+      document.getElementById("enc_token_field").value = result;
+      document.getElementById("send_data").submit();
+    });
+  }
+
+= haml :"_response_panel"
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Register
+  .panel-body
+    .row
+      .col-md-6
+        %form#send_data{ :method => :post, :action => "/login" }
+          %input#enc_token_field{:type=>:hidden, :name => "creds", :value => "none"}
+        %form{ :onsubmit => "encrypt(); return false;" }
+          .row.pt-10px
+            .col-md-4 Name
+          .row
+            .col-md-4
+              %input#name{:size => "40", :type => "text", :value => @name||""}/
+          .row.pt-10px
+            .col-md-4 Email
+          .row
+            .col-md-6
+              %input#email{:size => "40", :type => "text",:value => @email||""}/
+          .row.pt-10px
+            .col-md-4 Password
+          .row
+            .col-md-6
+              %input#pword{:size => "40", :type => "password"}/
+          .row.pt-10px
+            .col-md-4 Repeat Password
+          .row
+            .col-md-6
+              %input#pword2{:size => "40", :type => "password"}/
+          %p
+          .row.pt-10px
+            .col-md-4
+          .row
+            .col-md-6
+              %input.btn.btn-warning{:type => "submit", :value => "Submit"}

@@ -1,0 +1,13 @@
+- total = 0
+- @ratings.each do |factor|
+  - total += factor[:rating]
+  %tr
+    %td
+      %span{:tooltip => factor[:desc] }= factor[:name]
+    %td.txa-c= format_rating_value(factor[:value])
+    %td.txa-c{:class => factor[:rating] < 0 ? "c-red" : "c-green"}= factor[:rating]
+
+%tr
+  %td.fw-900 Total Score
+  %td
+  %td.txa-c{:class => total < 0 ? "c-red" : "c-green"}= total

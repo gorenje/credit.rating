@@ -1,0 +1,78 @@
+version: '2'
+services:
+  postgres:
+    image: postgres:9.6.6
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=nicesecret
+    ports:
+      - "5432:5432"
+    volumes:
+      - credratdb:/var/lib/postgresql/data
+
+  credrat:
+    build: .
+    ports:
+      - "3000:3000"
+    command: "/bin/bash -c 'rake docker:pause_for_db      && \
+                            rake docker:if_db_is_migrated && \
+                            rake appjson:to_dotenv        && \
+                            foreman start web'"
+    links:
+      - postgres
+    environment:
+      - PORT=3000
+      - LOGIN_HOST=localhost:3000
+      - BADGE_HOST=localhost:3000
+      - FIGO_REDIRECT_URL=http://localhost:3000
+      - FIGO_DEMO_ACCESS_TOKEN=ASHWLIkouP2O6_bgA2wWReRhletgWKHYjLqDaqb0LFfamim9RjexTo22ujRIP_cjLiRiSyQXyt2kM1eXU2XLFZQ0Hro15HikJQT_eNeT_9XQ
+      - DATABASE_URL=postgres://postgres:nicesecret@postgres:5432/credrat
+      - DOCKER_ENV_STORE=/var/lib/credrat/env
+    volumes:
+      - credratenv:/var/lib/credrat/env
+    restart: always
+
+  credrat-migrate-db:
+    build: .
+    command: "/bin/bash -c 'rake docker:pause_for_db               && \
+                            rake docker:if_db_not_migrated         && \
+                            rake appjson:to_dotenv                 && \
+                            rake db:create                         && \
+                            rake docker:create_postgres_extensions && \
+                            rake db:migrate                        && \
+                            rake import:figo_supported_stuff'"
+    links:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://postgres:nicesecret@postgres:5432/credrat
+      - DOCKER_ENV_STORE=/var/lib/credrat/env
+    volumes:
+      - credratenv:/var/lib/credrat/env
+
+  credrat-rolling-imports:
+    build: .
+    command: "/bin/bash -c 'rake docker:pause_for_db               && \
+                            rake docker:if_db_is_migrated          && \
+                            rake appjson:to_dotenv                 && \
+                            sleep 600                              && \
+                            rake import:from_figo                  && \
+                            rake ratings:compute'"
+    links:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://postgres:nicesecret@postgres:5432/credrat
+      - DOCKER_ENV_STORE=/var/lib/credrat/env
+    volumes:
+      - credratenv:/var/lib/credrat/env
+    restart: always
+
+networks:
+  default:
+    external:
+      name: credratnet
+
+volumes:
+  credratdb:
+    external: true
+  credratenv:
+    external: true

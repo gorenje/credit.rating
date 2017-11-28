@@ -1,0 +1,60 @@
+= haml :"_js_encrypt"
+
+:javascript
+  function encrypt() {
+    $('#srvcode').val($('#servicecode').val());
+
+    encrypt_data(collect_figo_data(), "#{FigoPublicKey}", function(result){
+      document.getElementById("enc_token_field").value = result;
+      document.getElementById("send_data").submit();
+    });
+  }
+
+  function upload_instead() {
+    $('#srvcode').val($('#servicecode').val());
+    $("#enc_token_field").val("upload_instead");
+    $("#send_data").submit();
+  }
+
+= haml :"_response_panel"
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Prepare Service Credentials
+  .panel-body
+    .row
+      .col-md-6
+        %form#send_data{ :method => :post, :action => "/add_service" }
+          %input#enc_token_field{:type=>:hidden, :name => "creds", :value => ""}
+          %input#srvcode{:type=>:hidden, :name => "servicecode", :value => ""}
+
+        .row.pt-10px
+          .col-md-4
+        .row
+          .col-md-6
+            %select#servicecode
+              %option{ :value => "" } --- Select Service ---
+              - FigoSupportedService.all.each do |srv|
+                %option{ :value => srv.bank_code }= srv.bank_name
+        .row.pt-10px
+          .col-md-4
+        .row
+          .col-md-6
+            %span#bankname
+        #bankdetails
+
+:javascript
+  $(document).ready(function(){
+    $('#servicecode').on('change', function(){
+      $('#bankdetails').html("");
+
+      $.ajax({
+        url: '/service/details',
+        method: 'post',
+        dataType: 'json',
+        data: { servicecode: $('#servicecode').val() }
+      }).done(function(data){
+        $('#bankdetails').html(data["form"]);
+      });
+    });
+  });

@@ -1,0 +1,42 @@
+= haml :"_response_panel"
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Account Details
+  .panel-body
+    - if @accounts.size == 0
+      No Account available,
+      %a{ :href => "/add_account" } Add Account
+      or
+      %a{ :href => "/add_service" } Add Service
+    - else
+      %a{ :href => "/add_account" } Add Account
+      or
+      %a{ :href => "/add_service" } Add Service
+      %hr
+      = haml :"_js_tablesorter", :locals => {:tableid => "acctable" }
+      %table#acctable.colorit.w-100p.tablesorter
+        %thead
+          %tr
+            %th Owner
+            %th Account Number
+            %th Bank Code
+            %th IBAN
+            %th.txa-c Balance
+            %th.txa-c Actions
+        %tbody
+          - @accounts.each do |account|
+            %tr
+              %td= account.owner
+              %td= account.account_number
+              %td= account.bank.figo_bank_name || account.bank.iban_bank_name
+              %td.ws-nw
+                - if account.is_service?
+                  = account.iban
+                - else
+                  = account.iban_obj.prettify
+              %td.txa-r.ws-nw
+                &nbsp;
+                = currency(account.last_known_balance, :unit => account.currency)
+              %td.pl-5px
+                = haml :"_account_actions", :locals => { :account => account }

@@ -1,0 +1,25 @@
+= haml :"_account_panel"
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title= "Transactions (#{@transactions.count})"
+  .panel-body
+    = haml :"_js_tablesorter", :locals => {:tableid => "transtable" }
+    %table#transtable.colorit.w-100p.tablesorter
+      %thead
+        %tr
+          %th Date
+          %th Name
+          %th Account Number
+          %th Purpose
+          %th Type
+          %th.txa-r Amount
+      %tbody
+        - (@transactions || []).sort_by(&:value_date).each do |transaction|
+          %tr
+            %td.p-5px= format_date(transaction.value_date)
+            %td= transaction.name
+            %td= @account.account_number
+            %td= transaction.purpose
+            %td= transaction.transaction_type
+            %td.txa-r.ws-nw.p-5px{:class => transaction.amount < 0 ? "c-red" : "c-blue"}= currency(transaction.amount, :unit => @account.currency)

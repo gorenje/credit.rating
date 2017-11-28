@@ -1,0 +1,85 @@
+= haml :"_js_encrypt"
+
+:javascript
+  function encrypt() {
+    $('#ibanvalue').val($('#iban').val());
+
+    encrypt_data(collect_figo_data(), "#{FigoPublicKey}", function(result){
+      document.getElementById("enc_token_field").value = result;
+      document.getElementById("send_data").submit();
+    });
+  }
+
+  function upload_instead() {
+    $('#ibanvalue').val($('#iban').val());
+    $("#enc_token_field").val("upload_instead");
+    $("#send_data").submit();
+  }
+
+= haml :"_response_panel"
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Prepare Bank Credentials
+  .panel-body
+    .row
+      .col-md-8
+        %form#send_data{ :method => :post, :action => "/add_account" }
+          %input#enc_token_field{:type=>:hidden, :name => "creds", :value => ""}
+          %input#ibanvalue{:type=>:hidden, :name => "iban", :value => ""}
+
+        .row.pt-10px
+          .col-md-6
+            %input#iban{:size => "40", :type => "text", :placeholder => "IBAN" }/
+          .col-md-2
+            %span#ibangood.td-n.mr-5px.brad-100p.bgc-green.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "checkmark5"}
+            %span#ibanbad.td-n.mr-5px.brad-100p.bgc-red.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "cross4"}
+            %img#ibanwait.td-n.mr-5px.brad-100p.bgc-orange.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{:src => "/images/loader.svg"}
+
+        .row.pt-10px
+          .col-md-4
+        .row
+          .col-md-6
+            %span#bankname
+        #bankdetails
+
+
+:javascript
+  $(document).ready(function(){
+    $('#ibangood').hide();
+    $('#ibanbad').hide();
+    $('#ibanwait').hide();
+    $('#bankname').parent().parent().hide();
+
+    $('#iban').on('change', function(){
+      $('#ibangood').hide();
+      $('#ibanbad').hide();
+      $('#ibanwait').show();
+      $('#bankdetails').html("");
+
+      $.ajax({
+        url: '/iban/check',
+        method: 'post',
+        dataType: 'json',
+        data: { iban: $('#iban').val() }
+      }).done(function(data){
+        if ( data["r"] ) {
+           $('#ibangood').show();
+           $('#bankname').parent().parent().show();
+           $('#bankname').html("<img src='/images/loader.svg'>");
+           $.ajax({
+             url: '/iban/bankdetails',
+             method: 'post',
+             dataType: 'json',
+             data: { iban: $('#iban').val() }
+           }).done(function(data){
+             $('#bankname').html("");
+             $('#bankdetails').html(data["form"]);
+           });
+        } else {
+           $('#ibanbad').show();
+        }
+        $('#ibanwait').hide();
+      });
+    });
+  });

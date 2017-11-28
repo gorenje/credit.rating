@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <style type="text/css">.loader {
+      fill: #044057;
+    }
+    .loader__circle {
+      opacity: .2;
+    }</style>
+
+ <g>
+  <title>Layer 1</title>
+  <path id="svg_1" d="m20.201,5.169c-8.254001,0 -14.946,6.692 -14.946,14.946c0,8.255001 6.691999,14.946001 14.946,14.946001s14.945999,-6.691 14.945999,-14.946001c-0.000999,-8.254 -6.691999,-14.946 -14.945999,-14.946zm0,26.58c-6.425,0 -11.634,-5.208 -11.634,-11.634001c0,-6.425 5.209,-11.634 11.634,-11.634c6.424999,0 11.632999,5.209 11.632999,11.634c0,6.426001 -5.208,11.634001 -11.632999,11.634001z" class="loader loader__circle"/>
+  <rect id="svg_2" height="3" width="3" y="25.2" x="18.499999" stroke-width="0" stroke="#000000" fill="#FF0000"/>
+  <rect id="svg_4" height="11.2" width="3" y="11.800002" x="18.499999" stroke-width="0" stroke="#000000" fill="#FF0000"/>
+ </g>
+</svg>

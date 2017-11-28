@@ -1,0 +1,76 @@
+%link{:href => "//cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.css", :media => "screen", :rel => "stylesheet", :type => "text/css"}/
+%script{ :type=>"text/javascript", :src=>"//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" }
+%script{:type=>"text/javascript",:src => "//cdnjs.cloudflare.com/ajax/libs/d3/3.5.15/d3.min.js"}
+%script{:type=>"text/javascript",:src => "//cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.js"}
+
+:css
+  .chart_container {
+    width: 100%;
+    position: relative;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .chart {
+    position: relative;
+    left: 40px;
+  }
+  .y_axis {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+  }
+  .x_axis {
+    padding-left: 40px;
+  }
+
+:javascript
+  function graphit(elemid, url){
+    $.ajax({
+       url: url,
+       method: 'get',
+       dataType: 'json'
+    }).done(function(data){
+      if ( data.empty ) {
+        $(elemid).parent().hide();
+        var text = $(elemid).parent().parent().find('.panel-title').html();
+        $(elemid).parent().parent().find('.panel-title').
+          html(text +": No transactions");
+        return;
+      }
+
+      var graph = new Rickshaw.Graph( {
+           element: $(elemid+' .chart')[0],
+           width: 800,
+           height: 300,
+           min: data.ymin,
+           max: data.ymax,
+           renderer: 'line',
+           series: data.data
+      });
+
+      new Rickshaw.Graph.Axis.Y( {
+         graph: graph,
+         orientation: 'left',
+         tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+         element: $(elemid+' .y_axis')[0],
+      });
+
+      var format = function(n) { return data.xlookup[n]; }
+      var x_ticks = new Rickshaw.Graph.Axis.X( {
+         graph: graph,
+         orientation: 'bottom',
+         element: $(elemid+' .x_axis')[0],
+         pixelsPerTick: 200,
+         tickFormat: format
+      });
+
+      new Rickshaw.Graph.HoverDetail( {
+        graph: graph,
+        xFormatter: function(x) { return format(x); },
+        formatter: function(series, x, y) {
+          return series.name + " for " + format(x) + ": " + y;
+        }
+      });
+      graph.render();
+    });
+  }

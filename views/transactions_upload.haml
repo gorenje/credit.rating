@@ -1,0 +1,58 @@
+= haml :"_js_encrypt"
+
+:javascript
+  function encrypt(data) {
+    var jsondata = JSON.stringify({filedata: data, format: $('input[name="format"]:checked').val()});
+
+    encrypt_data(jsondata, "#{ENV['RSA_PUBLIC_KEY']}", function(result){
+      document.getElementById("enc_token_field").value = result;
+      document.getElementById("send_data").submit();
+    });
+  }
+
+  function handleFileSelect()
+    {
+      if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+        alert('The File APIs are not fully supported in this browser.');
+        return;
+      }
+
+      input = document.getElementById('fileinput');
+
+      if (!input) {
+        alert("Um, couldn't find the fileinput element.");
+      }
+      else if (!input.files) {
+        alert("This browser doesn't seem to support the `files` property of file inputs.");
+      }
+      else if (!input.files[0]) {
+        alert("Please select a file before clicking 'Load'");
+      }
+      else {
+        var file = input.files[0];
+        var fr = new FileReader();
+        fr.onload = receivedText;
+        fr.readAsDataURL(file);
+      }
+    }
+
+    function receivedText(e) {
+      encrypt(e.target.result);
+    }
+
+= haml :"_account_panel"
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Upload
+  .panel-body
+    %form#send_data{ :method => :post, :action => "/add_transactions/#{@account.id}" }
+      %input#enc_token_field{:type => :hidden, :name => "creds"}
+
+    %form
+      .row
+        .col-md-6
+          %input#fileinput{ :type => "file", :name => "file" }
+      .row.pt-10px
+        .col-md-6
+          %input#btnLoad{ :type=>"button", :value=>"Upload", :onclick=>"handleFileSelect();" }

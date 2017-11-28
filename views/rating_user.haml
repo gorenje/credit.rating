@@ -1,0 +1,23 @@
+- if @user.nil?
+  .panel.panel-primary
+    .panel-heading
+      %h3.panel-title Unknown User
+
+- else
+  = haml :"_js_graph"
+
+  .panel.panel-primary
+    .panel-heading
+      %h3.panel-title= "Credit Rating for #{@user.name}"
+    .panel-body
+      .row
+        .col-md-12
+          %center
+            %span.fw-900.fsz-100px= @user.rating.score
+
+  = haml :"_graph_panel", :locals => {:title => "Credit Rating History", :id=>"chart1" }
+
+  :javascript
+    $(document).ready(function(){
+      graphit('#chart1', "/api/rating/#{params[:eid]}.json");
+    });

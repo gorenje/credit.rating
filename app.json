@@ -1,0 +1,86 @@
+{
+  "name" : "Credit Rating",
+  "description": "Provide a Credit Rating using Bank Account Data",
+  "keywords": [
+    "fintech",
+    "credit rating"
+  ],
+  "repository": "https://github.com/gorenje/credit.rating",
+  "scripts": {
+    "postdeploy": "bundle exec rake db:migrate import:figo_supported_stuff"
+  },
+  "env": {
+    "RACK_ENV": {
+      "description": "Rack environment",
+      "value": "production"
+    },
+    "PORT": {
+      "description": "Web port for local testing, delete on heroku.",
+      "value": "3000"
+    },
+    "COOKIE_SECRET": {
+      "description": "Secret for the cookie storage",
+      "generator": "secret"
+    },
+    "PASSWORD_PEPPER": {
+      "description": "Pepper spice in the password hashing",
+      "generator": "secret"
+    },
+    "DATABASE_URL": {
+      "description": "Database URL set by Heroku when using Postgres",
+      "required": true
+    },
+    "FIGO_CLIENT_ID": {
+      "description": "Client ID given to you from Figo.",
+      "value": "CaESKmC8MAhNpDe5rvmWnSkRE_7pkkVIIgMwclgzGcQY"
+    },
+    "FIGO_CLIENT_SECRET": {
+      "description": "Client secret given to you from Figo.",
+      "value": "STdzfv0GXtEj_bwYn7AgCVszN1kKq5BdgEIKOM_fzybQ"
+    },
+    "FIGO_REDIRECT_URL": {
+      "description": "Callback URL for figo login callbacks",
+      "value": "http://localhost:3000"
+    },
+    "FIGO_USERNAME": {
+      "description": "A user that you create once you can create figo users.",
+      "value": "demo@figo.me"
+    },
+    "FIGO_PASSWORD": {
+      "description": "Corresponding password for you figo user",
+      "value": "demo1234"
+    },
+    "CRED_KEY_BASE64": {
+      "description": "Used for encrypting sensitive data before storing in database. See Readme.",
+      "required": true
+    },
+    "CRED_IV_BASE64": {
+      "description": "Used for encrypting sensitive data before storing in database. See Readme.",
+      "required": true
+    },
+    "RSA_PRIVATE_KEY": {
+      "description": "Decrypt sensitive data sent from the client. See Readme.",
+      "required": true
+    },
+    "RSA_PUBLIC_KEY": {
+      "description": "Encrypt sensitive data sent from the client. See Readme.",
+      "required": true
+    },
+    "MANDRILL_API_KEY": {
+      "description": "Mandrill API Key to send emails.",
+      "required": true
+    },
+    "LOGIN_HOST": {
+      "description": "Login host, usual the same as the dashboard",
+      "value": "localhost:3000"
+    },
+    "BADGE_HOST": {
+      "description": "Host where badges are hosted.",
+      "value": "localhost:3000"
+    },
+    "HOSTS_WITH_NO_SSL": {
+      "description": "Comma-separated-list of hosts that do not use SSL.",
+      "value": "localhost"
+    }
+  }
+}

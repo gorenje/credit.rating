@@ -1,0 +1,19 @@
+%span#badge
+  %a{ :href => "#{$hosthandler.badge.url}/rating/#{user.external_id}" }
+    %img{ :height => "50px", :src => "#{$hosthandler.badge.url}/badge/#{user.external_id}.svg" }
+
+%button#ccbtn.btn.btn-warning{"data-clipboard-target" => "#badge", "data-icon" => "copy", :title => "Copy Badge Snippet"}
+
+:javascript
+  $(document).ready(function(){
+    var clipboard = new Clipboard('#ccbtn',{
+      text: function(trigger) {
+        return $('#badge').html();
+      }
+    });
+
+    clipboard.on('success', function(e) {
+      $('#ccbtn').css("background-color", "#58dc6e");
+      e.clearSelection();
+    });
+  });

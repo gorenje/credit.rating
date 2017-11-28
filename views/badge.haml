@@ -1,0 +1,9 @@
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Credit Badge
+  .panel-body
+    Install your very own ratings badge on your website by
+    copying the HTML snippet and placing on your website.
+    %p
+    %center
+      = haml :"_badge", :locals => { :user => @user }

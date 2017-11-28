@@ -1,0 +1,51 @@
+= haml :"_js_encrypt"
+
+:javascript
+  function encrypt() {
+    var data = JSON.stringify({email: $('#user').val(), password: $('#pin').val(), type: 'login'});
+
+    encrypt_data(data, "#{ENV['RSA_PUBLIC_KEY']}", function(result){
+      document.getElementById("enc_token_field").value = result;
+      document.getElementById("send_data").submit();
+    });
+  }
+
+= haml :"_response_panel"
+
+- unless session[:user_id]
+  .panel.panel-primary
+    .panel-heading
+      %h3.panel-title Login
+    .panel-body
+      .row
+        .col-md-6
+          %form#send_data{ :method => :post, :action => "/login" }
+            %input#enc_token_field{:type=>:hidden, :name => "creds", :value => "none"}
+
+          %form{ :onsubmit => "encrypt(); return false;" }
+            .row.pt-10px
+              .col-md-4 Email:
+            .row
+              .col-md-6
+                %input#user{:size => "40", :type => "text", :value => @email||"" }/
+            .row.pt-10px
+              .col-md-4 Password:
+            .row
+              .col-md-6
+                %input#pin{:size => "40", :type => "password"}/
+            .row.pt-10px
+              .col-md-4
+            .row
+              .col-md-6
+                %input.btn.btn-warning{:type => "submit", :value => "Login"}
+            .row.pt-10px
+              .col-md-12
+                Not yet a user?
+                %a{ :href => "/register" } Register!
+
+- else
+  .panel.panel-primary
+    .panel-heading
+      %h3.panel-title You are logged in!
+    .panel-body
+      %a{ :href => "/logout" } Logout?

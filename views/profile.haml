@@ -1,0 +1,76 @@
+= haml :"_js_graph"
+
+= haml :"_response_panel"
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Your Profile
+  .panel-body
+    %form{ :action => "/profile", :method => :post }
+      .row
+        .col-md-4
+          %img.avatar{ :height => 80, :src => @user.gravatar_image }
+      .row.pt-10px
+        .col-md-12.fw-900 Name
+      .row
+        .col-md-12
+          %input{ :type => :text, :size => 60, :value => @user.name, :name => :username }
+      .row.pt-10px
+        .col-md-12.fw-900 Email
+      .row
+        .col-md-12
+          %input{ :type => :text, :size => 60, :value => @user.email, :disabled => true }
+      .row.pt-10px
+        .col-md-12
+          %input.btn.btn-success{ :type => :submit, :value => "Update" }
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Figo Login
+  .panel-body
+    .row
+      .col-md-1
+        Username:
+      .col-md-3.fw-900
+        = @user.email
+    .row
+      .col-md-1
+        Password:
+      .col-md-3
+        %span#password.hide
+          = Base64.encode64(@user.creds["figo_password"] || "")
+        %a#passbtn.btn.btn-warning{"data-clipboard-target" => "#password", "data-icon" => "copy", :title => "Copy Password"} Copy Password
+    .row
+      .col-md-2
+        %a{ :target => "_blank", :href => "https://home.figo.me/login?next=/" }
+          Login here
+
+    :javascript
+      $(document).ready(function(){
+        var clipboard = new Clipboard('#passbtn',{
+          text: function(trigger) {
+            return atob($('#password').html().trim());
+          }
+        });
+
+        clipboard.on('success', function(e) {
+          $('#passbtn').css("background-color", "#58dc6e");
+          e.clearSelection();
+        });
+      });
+
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title= "Personal Badge - Current Rating: #{@user.rating.score}"
+  .panel-body
+    Use the copy button to copy the badge and install on your own website.
+    %p
+    = haml :"_badge", :locals => { :user => @user }
+
+= haml :"_graph_panel", :locals => {:title => "Credit Rating History", :id=>"chart1" }
+
+:javascript
+  $(document).ready(function(){
+    graphit('#chart1', "/api/rating/#{@user.external_id}.json");
+  });

@@ -1,0 +1,11 @@
+.row
+  .col-md-1
+    %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "format_list_bulleted", :title => "View Transactions (" + account.transactions.count.to_s + ")", :href => "/transactions/#{account.id}"  }
+  .col-md-1
+    %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "graph2", :title => "View Graphs", :href => "/transactions/graph/#{account.id}" }
+  .col-md-1
+    %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "file_upload", :title => "Upload Transactions", :href => "/add_transactions/#{account.id}" }
+  .col-md-1
+    %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "refresh3", :title => "Refresh Transactions", :href => "/account/refresh/#{account.id}" }
+  .col-md-1
+    %a.td-n.mr-5px.brad-100p.bgc-red-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "cross4", :title => "Delete Account", :href => "/account/delete/#{account.id}" }
